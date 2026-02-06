@@ -31,47 +31,81 @@ export const generateMockWords = (): WordItem[] => {
       ], 
       img: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHY0bmJ2Zmt6eHBmZHBmZHBmZHBmZHBmZHBmZHBmZHBmZHBmJmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKMGpxV3L2I8v8A/giphy.gif', 
       ex: 'Fish like to swim in the sea.',
-      tip: "The letter m looks like waves! 🌊 (字母 m 就像海里的波浪，我们在波浪里游！)"
+      tip: "The letter m looks like waves! 🌊 (字母 m 就像海里的波浪，我们在波浪里 swim！)"
     },
     { 
-      word: 'apple', 
+      word: 'lamp', 
       type: 'noun', 
-      meaning: '苹果', 
-      segments: ['ap', 'ple'], 
+      meaning: '台灯', 
+      segments: ['lamp'], 
       rules: [
         {
-          label: 'Short a sound',
-          displayLabel: '🍎 饱满 a',
-          tooltipText: '嘴巴张大，就像你要咬一口红红的大苹果一样，发出 aaaa 的声音！',
-          color: 'orange'
-        },
-        {
-          label: 'Silent e',
-          displayLabel: '🤫 魔法 e',
-          tooltipText: '单词末尾的 e 是个害羞的魔法师，它不说话，但它会给前面的字母变魔术！',
+          label: 'Letter L',
+          displayLabel: '📏 长长 L',
+          tooltipText: 'L 站得高高的，帮我们照亮房间。',
           color: 'blue'
         }
       ], 
-      img: 'https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?q=80&w=800&auto=format&fit=crop', 
-      ex: 'I like to eat a red apple.',
-      tip: "The round a is like the big red apple! 🍎 (圆圆的字母 a 就像红红的大苹果！)"
+      img: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?q=80&w=800&auto=format&fit=crop', 
+      ex: 'Turn on the lamp please.',
+      tip: "The letter L looks like a tall lamp standing in the room! 💡 (长长的字母 L 就像房间里高高的台灯！)"
     },
     { 
-      word: 'jump', 
-      type: 'verb', 
-      meaning: '跳', 
-      segments: ['jump'], 
+      word: 'camel', 
+      type: 'noun', 
+      meaning: '骆驼', 
+      segments: ['ca', 'mel'], 
       rules: [
         {
-          label: 'Short u sound',
-          displayLabel: '🥤 咕噜 u',
-          tooltipText: '就像喝了一口果汁，发出的声音短促又好听！',
+          label: 'm sound',
+          displayLabel: '🐪 双驼峰',
+          tooltipText: '看到 m 就要想到骆驼背上的两个包包。',
+          color: 'orange'
+        }
+      ], 
+      img: 'https://images.unsplash.com/photo-1523585422575-02094821e27a?q=80&w=800&auto=format&fit=crop', 
+      ex: 'The camel lives in the desert.',
+      tip: "The letter m is like the two humps on the camel's back! 🐪 (字母 m 就像骆驼背上那两个高高的驼峰！)"
+    },
+    { 
+      word: 'elephant', 
+      type: 'noun', 
+      meaning: '大象', 
+      segments: ['e', 'le', 'phant'], 
+      rules: [
+        {
+          label: 'Letter e',
+          displayLabel: '🐘 卷鼻子',
+          tooltipText: 'e 的小尾巴卷起来，就像大象的鼻子。',
+          color: 'blue'
+        },
+        {
+          label: 'ph sound',
+          displayLabel: '🌬️ 吹风 f',
+          tooltipText: 'p 和 h 碰到一起，就变成了 f 的声音。',
+          color: 'purple'
+        }
+      ], 
+      img: 'https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?q=80&w=800&auto=format&fit=crop', 
+      ex: 'The elephant is very big.',
+      tip: "The letter e is like an elephant's curly trunk! 🐘 (字母 e 就像大象卷起来的长鼻子！)"
+    },
+    { 
+      word: 'banana', 
+      type: 'noun', 
+      meaning: '香蕉', 
+      segments: ['ba', 'na', 'na'], 
+      rules: [
+        {
+          label: 'repeating pattern',
+          displayLabel: '🍌 香蕉切片',
+          tooltipText: 'a-n-a 重复了两次，就像一串香蕉。',
           color: 'yellow'
         }
       ], 
-      img: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHY0bmJ2Zmt6eHBmZHBmZHBmZHBmZHBmZHBmZHBmZHBmZHBmJmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/l0HlU9Y3lJ2526TLO/giphy.gif', 
-      ex: 'The frog can jump very high.',
-      tip: "The letter j is like a little hook to jump over! 🪝 (字母 j 像个小钩子，让我们跳过去吧！)"
+      img: 'https://images.unsplash.com/photo-1571771894821-ad99621139c6?q=80&w=800&auto=format&fit=crop', 
+      ex: 'I eat a banana for breakfast.',
+      tip: "The letters a-n-a-n-a look like repeating banana slices! 🍌 (a-n-a 就像一片片切好的香蕉，排成队等我们吃！)"
     }
   ];
 

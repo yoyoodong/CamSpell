@@ -19,7 +19,7 @@ const StudyView: React.FC<StudyViewProps> = ({
   onStartQuiz
 }) => {
   const [imgLoaded, setImgLoaded] = useState(false);
-  const [isTipOpen, setIsTipOpen] = useState(false);
+  const [isTipOpen, setIsTipOpen] = useState(true); // Open by default for engagement
   
   const playWord = () => {
     const utterance = new SpeechSynthesisUtterance(wordItem.word);
@@ -38,16 +38,15 @@ const StudyView: React.FC<StudyViewProps> = ({
   const isReview = wordItem.masteryLevel > 0;
   const isVerb = wordItem.type === 'verb';
 
-  // Function to highlight keys if we want to match specific words in tip
   const renderMemoryTip = (text: string) => {
     const [en, zh] = text.split('(');
     return (
       <div className="space-y-3">
-        <p className="text-white text-xl font-bold font-fredoka leading-tight tracking-wide">
+        <p className="text-white text-2xl font-bold font-fredoka leading-tight tracking-wide">
           {en.trim()}
         </p>
         {zh && (
-          <p className="text-sky-50 text-lg opacity-90 leading-snug">
+          <p className="text-sky-50 text-xl opacity-95 leading-snug font-medium">
             ({zh}
           </p>
         )}
@@ -138,7 +137,7 @@ const StudyView: React.FC<StudyViewProps> = ({
         </div>
       </div>
 
-      {/* NEW: Memory Magic Section */}
+      {/* Memory Magic Section */}
       <div 
         className={`bg-sky-500 rounded-[2.5rem] transition-all duration-300 shadow-lg overflow-hidden border-4 border-white/20`}
       >
@@ -155,7 +154,7 @@ const StudyView: React.FC<StudyViewProps> = ({
           {isTipOpen ? <ChevronUp size={28} /> : <ChevronDown size={28} />}
         </button>
         
-        <div className={`transition-all duration-300 ease-in-out ${isTipOpen ? 'max-h-[300px] opacity-100 border-t border-white/10' : 'max-h-0 opacity-0 overflow-hidden'}`}>
+        <div className={`transition-all duration-300 ease-in-out ${isTipOpen ? 'max-h-[400px] opacity-100 border-t border-white/10' : 'max-h-0 opacity-0 overflow-hidden'}`}>
           <div className="p-8 pt-4">
             {renderMemoryTip(wordItem.memoryTip)}
           </div>
