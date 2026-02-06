@@ -19,7 +19,7 @@ const StudyView: React.FC<StudyViewProps> = ({
   onStartQuiz
 }) => {
   const [imgLoaded, setImgLoaded] = useState(false);
-  const [isTipOpen, setIsTipOpen] = useState(true); // Open by default for engagement
+  const [isTipOpen, setIsTipOpen] = useState(true);
   
   const playWord = () => {
     const utterance = new SpeechSynthesisUtterance(wordItem.word);
@@ -38,16 +38,35 @@ const StudyView: React.FC<StudyViewProps> = ({
   const isReview = wordItem.masteryLevel > 0;
   const isVerb = wordItem.type === 'verb';
 
-  const renderMemoryTip = (text: string) => {
-    const [en, zh] = text.split('(');
+  /**
+   * Highlights letters from the target word inside the English portion of the tip
+   */
+  const renderMemoryTip = (text: string, word: string) => {
+    const [enPart, zhPart] = text.split('(');
+    const wordLetters = word.toLowerCase().split('');
+
+    const highlightText = (str: string) => {
+      return str.split('').map((char, i) => {
+        const isTargetLetter = wordLetters.includes(char.toLowerCase());
+        if (isTargetLetter) {
+          return (
+            <span key={i} className="text-yellow-300 underline decoration-yellow-400 decoration-4 underline-offset-4">
+              {char}
+            </span>
+          );
+        }
+        return char;
+      });
+    };
+
     return (
-      <div className="space-y-3">
-        <p className="text-white text-2xl font-bold font-fredoka leading-tight tracking-wide">
-          {en.trim()}
+      <div className="space-y-4">
+        <p className="text-white text-2xl sm:text-3xl font-bold font-fredoka leading-tight tracking-wide">
+          {highlightText(enPart.trim())}
         </p>
-        {zh && (
+        {zhPart && (
           <p className="text-sky-50 text-xl opacity-95 leading-snug font-medium">
-            ({zh}
+            ({zhPart}
           </p>
         )}
       </div>
@@ -57,7 +76,7 @@ const StudyView: React.FC<StudyViewProps> = ({
   return (
     <div className="max-w-3xl mx-auto animate-fade-in flex flex-col gap-6">
       {/* Situational Image Container */}
-      <div className={`bg-blue-50 rounded-[2.5rem] shadow-2xl overflow-hidden border-8 border-white relative h-[400px] ${isVerb ? 'animate-gentle-pulse ring-4 ring-yellow-400/20' : ''}`}>
+      <div className={`bg-blue-50 rounded-[2.5rem] shadow-2xl overflow-hidden border-8 border-white relative h-[350px] sm:h-[400px] ${isVerb ? 'animate-gentle-pulse ring-4 ring-yellow-400/20' : ''}`}>
         {!imgLoaded && (
           <div className="absolute inset-0 flex items-center justify-center bg-blue-100 animate-pulse">
             <Sparkles className="text-blue-200" size={64} />
@@ -71,7 +90,6 @@ const StudyView: React.FC<StudyViewProps> = ({
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
         
-        {/* Badges */}
         <div className="absolute top-6 left-6 flex flex-col gap-3">
           <div className="flex items-center gap-2 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-2xl shadow-lg border-2 border-white">
             {isReview ? (
@@ -154,9 +172,9 @@ const StudyView: React.FC<StudyViewProps> = ({
           {isTipOpen ? <ChevronUp size={28} /> : <ChevronDown size={28} />}
         </button>
         
-        <div className={`transition-all duration-300 ease-in-out ${isTipOpen ? 'max-h-[400px] opacity-100 border-t border-white/10' : 'max-h-0 opacity-0 overflow-hidden'}`}>
+        <div className={`transition-all duration-300 ease-in-out ${isTipOpen ? 'max-h-[500px] opacity-100 border-t border-white/10' : 'max-h-0 opacity-0 overflow-hidden'}`}>
           <div className="p-8 pt-4">
-            {renderMemoryTip(wordItem.memoryTip)}
+            {renderMemoryTip(wordItem.memoryTip, wordItem.word)}
           </div>
         </div>
       </div>

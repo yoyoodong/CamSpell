@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { WordItem } from '../types';
-import { Volume2, HelpCircle, Sparkles, Keyboard, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { Volume2, HelpCircle, Sparkles, Keyboard, AlertCircle, Eye, EyeOff, Lightbulb, X } from 'lucide-react';
 import { getWordExplanation } from '../services/geminiService';
 import SpellingInputRow from './SpellingInputRow';
 
@@ -19,14 +19,16 @@ const WordCard: React.FC<WordCardProps> = ({ wordItem, onSpellingSuccess, onSpel
   const [showCorrectHint, setShowCorrectHint] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
   const [hintRevealed, setHintRevealed] = useState(false);
+  const [showMagicHint, setShowMagicHint] = useState(false);
 
-  // Masking Test: Hide meaning for words that are being reviewed
   const isReviewWord = wordItem.masteryLevel > 0;
   const shouldMask = isReviewWord && !hintRevealed;
 
   useEffect(() => {
     setHintRevealed(false);
     setUserInput('');
+    setShowMagicHint(false);
+    setAiExplanation(null);
   }, [wordItem.id]);
 
   const handleCheck = () => {
@@ -77,16 +79,40 @@ const WordCard: React.FC<WordCardProps> = ({ wordItem, onSpellingSuccess, onSpel
       {showResult === 'success' && <div className="absolute inset-0 bg-green-400/5 pointer-events-none animate-pulse" />}
       {showResult === 'fail' && <div className="absolute inset-0 bg-red-400/5 pointer-events-none animate-pulse" />}
 
-      <div className="absolute top-0 right-0 p-4">
-        <div className="flex items-center gap-2 text-blue-400 font-bold bg-blue-50 px-4 py-1 rounded-full shadow-sm border border-blue-100">
+      <div className="absolute top-0 right-0 p-4 flex gap-2">
+        <button 
+          onClick={() => setShowMagicHint(!showMagicHint)}
+          className={`flex items-center gap-2 font-bold px-4 py-1.5 rounded-full shadow-sm border transition-all active:scale-95 ${showMagicHint ? 'bg-yellow-400 text-white border-yellow-500' : 'bg-yellow-50 text-yellow-600 border-yellow-100'}`}
+        >
+          <Lightbulb size={16} fill={showMagicHint ? "white" : "none"} />
+          <span className="text-xs uppercase tracking-wider">Magic Hint</span>
+        </button>
+        <div className="flex items-center gap-2 text-blue-400 font-bold bg-blue-50 px-4 py-1.5 rounded-full shadow-sm border border-blue-100">
           {shouldMask ? <EyeOff size={16} /> : <Eye size={16} />}
           <span className="text-xs uppercase tracking-wider">
-            {shouldMask ? 'Masking Test' : 'Visual Spelling'}
+            {shouldMask ? 'Masked' : 'Normal'}
           </span>
         </div>
       </div>
 
-      <div className="text-center mb-6 mt-4">
+      {/* Magic Hint Overlay */}
+      {showMagicHint && (
+        <div className="absolute inset-x-0 top-16 z-30 mx-8 animate-bounce-in">
+          <div className="bg-sky-500 text-white p-5 rounded-3xl shadow-2xl border-4 border-white relative">
+            <button 
+              onClick={() => setShowMagicHint(false)}
+              className="absolute -top-2 -right-2 bg-white text-sky-500 p-1 rounded-full shadow-md"
+            >
+              <X size={16} />
+            </button>
+            <p className="font-fredoka text-lg leading-snug">
+              {wordItem.memoryTip}
+            </p>
+          </div>
+        </div>
+      )}
+
+      <div className="text-center mb-6 mt-6">
         <div className="relative inline-block mb-4">
           {!imgLoaded && (
             <div className="w-40 h-40 bg-gray-100 rounded-[2rem] flex items-center justify-center animate-pulse">
@@ -110,7 +136,7 @@ const WordCard: React.FC<WordCardProps> = ({ wordItem, onSpellingSuccess, onSpel
               onClick={() => setHintRevealed(true)}
               className="text-blue-500 text-sm font-bold flex items-center gap-1 bg-blue-50 px-4 py-2 rounded-full hover:bg-blue-100 transition-colors"
             >
-              <Eye size={14} /> Reveal Chinese Hint?
+              <Eye size={14} /> Reveal Chinese Meaning?
             </button>
           ) : (
             <p className="text-gray-500 text-2xl font-fredoka leading-none">"{wordItem.meaning}"</p>
@@ -165,13 +191,13 @@ const WordCard: React.FC<WordCardProps> = ({ wordItem, onSpellingSuccess, onSpel
       )}
 
       <style>{`
-        @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          25% { transform: translateX(-5px); }
-          75% { transform: translateX(5px); }
+        @keyframes bounce-in {
+          0% { transform: translateY(-20px) scale(0.9); opacity: 0; }
+          70% { transform: translateY(5px) scale(1.02); opacity: 1; }
+          100% { transform: translateY(0) scale(1); opacity: 1; }
         }
-        .animate-shake {
-          animation: shake 0.2s ease-in-out 0s 2;
+        .animate-bounce-in {
+          animation: bounce-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
       `}</style>
     </div>
