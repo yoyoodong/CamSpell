@@ -1,0 +1,7 @@
+{
+  "name": "CamSpell - Children's English Learning",
+  "description": "An interactive English spelling and learning application specifically designed for children studying for Cambridge Starters. Features syllable splitting, AI-powered word explanations, and engaging visual feedback.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
