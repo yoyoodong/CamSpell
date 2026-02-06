@@ -122,8 +122,8 @@ const App: React.FC = () => {
   const isReviewWord = currentWord.masteryLevel > 0;
 
   return (
-    <div className="min-h-screen bg-[#f8fbfe] pb-10 sm:pb-20 flex flex-col items-center">
-      <div className="fixed top-0 left-0 right-0 z-30 bg-gray-100 h-3 sm:h-5 shadow-sm overflow-hidden">
+    <div className="min-h-screen bg-[#f8fbfe] pb-6 sm:pb-20 flex flex-col items-center overflow-x-hidden">
+      <div className="fixed top-0 left-0 right-0 z-40 bg-gray-100 h-2 sm:h-4 shadow-sm overflow-hidden">
         <div 
           className="h-full bg-gradient-to-r from-blue-400 via-green-400 to-green-500 transition-all duration-1000 ease-out relative"
           style={{ width: `${progress}%` }}
@@ -132,37 +132,34 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      <nav className="w-full max-w-4xl bg-white/90 backdrop-blur-md shadow-sm px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center mt-5 sm:mt-6 rounded-2xl sm:rounded-3xl sticky top-6 sm:top-8 z-20 border-b-4 border-gray-100 gap-2 mx-4">
-        <div className="flex items-center gap-2">
-          <div className="bg-gradient-to-br from-blue-400 to-blue-600 p-1.5 sm:p-2 rounded-lg sm:rounded-xl text-white shadow-lg shadow-blue-100">
-            <BookOpen size={20} className="sm:w-[24px]" />
+      <nav className="w-[92%] max-w-4xl bg-white/90 backdrop-blur-md shadow-sm px-4 py-2 sm:py-3 flex justify-between items-center mt-4 sm:mt-6 rounded-2xl sm:rounded-3xl sticky top-4 sm:top-8 z-30 border-b-2 border-gray-100 gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className="bg-gradient-to-br from-blue-400 to-blue-600 p-1.5 rounded-lg text-white shadow-md">
+            <BookOpen size={16} className="sm:w-[20px]" />
           </div>
-          <h1 className="text-lg sm:text-2xl font-fredoka font-bold text-blue-600 tracking-wide">CamSpell</h1>
+          <h1 className="text-sm sm:text-xl font-fredoka font-bold text-blue-600 tracking-tight">CamSpell</h1>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-4">
-          <div className="hidden sm:flex items-center gap-1 sm:gap-2 bg-blue-50 px-2 sm:px-4 py-1 sm:py-2 rounded-xl sm:rounded-2xl border border-blue-100">
-             <Target size={14} className="text-blue-500 sm:w-[18px]" />
-             <div className="flex flex-col leading-none">
-               <span className="text-[8px] sm:text-[10px] uppercase font-bold text-blue-400 text-center">Goal</span>
-               <span className="font-bold text-blue-700 font-fredoka text-xs sm:text-lg">
-                 {gameState.wordsCompletedToday}/{gameState.dailyGoal}
-               </span>
-             </div>
+          <div className="hidden xs:flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-xl border border-blue-100">
+             <Target size={12} className="text-blue-500 sm:w-[14px]" />
+             <span className="font-bold text-blue-700 font-fredoka text-[10px] sm:text-sm">
+               {gameState.wordsCompletedToday}/{gameState.dailyGoal}
+             </span>
           </div>
 
-          <div className="flex items-center gap-1 sm:gap-2 bg-gray-100 p-1 rounded-xl sm:rounded-2xl">
-            <div className="flex items-center gap-1 px-2 sm:px-3 py-1">
-              <Flame size={16} className="text-orange-500 fill-orange-500 animate-pulse sm:w-[20px]" />
-              <span className="font-bold text-orange-700 text-sm sm:text-base">{gameState.streak}</span>
+          <div className="flex items-center gap-1 bg-gray-50 p-1 rounded-xl">
+            <div className="flex items-center gap-1 px-1.5 sm:px-2 py-0.5">
+              <Flame size={14} className="text-orange-500 fill-orange-500 sm:w-[16px]" />
+              <span className="font-bold text-orange-700 text-xs sm:text-sm">{gameState.streak}</span>
             </div>
-            <div className="w-px h-5 sm:h-6 bg-gray-300" />
-            <div className="flex items-center gap-0.5 sm:gap-1 px-2 sm:px-3 py-1">
+            <div className="w-px h-3 bg-gray-200" />
+            <div className="flex items-center gap-0.5 px-1.5 sm:px-2 py-0.5">
               {[...Array(5)].map((_, i) => (
                 <Heart 
                   key={i} 
-                  className={`${i < gameState.hearts ? "text-red-500 fill-red-500" : "text-gray-300"} transition-all sm:w-[18px]`} 
-                  size={14} 
+                  className={`${i < gameState.hearts ? "text-red-500 fill-red-500" : "text-gray-200"} transition-all sm:w-[14px]`} 
+                  size={12} 
                 />
               ))}
             </div>
@@ -170,44 +167,44 @@ const App: React.FC = () => {
         </div>
       </nav>
 
-      <main className="w-full max-w-4xl px-4 mt-6 sm:mt-8">
+      <main className="w-full max-w-4xl px-4 mt-4 sm:mt-8">
         {showSetComplete ? (
-          <div className="bg-white rounded-[2.5rem] sm:rounded-[3rem] shadow-2xl p-8 sm:p-12 text-center max-w-lg mx-auto border-8 border-green-50 animate-scale-up">
-            <div className="w-16 h-16 sm:w-24 sm:h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
-              <Star size={36} className="text-green-500 fill-green-500 sm:w-[48px]" />
+          <div className="bg-white rounded-[2rem] sm:rounded-[3rem] shadow-xl p-6 sm:p-12 text-center max-w-md mx-auto border-4 border-green-50 animate-scale-up">
+            <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Star size={32} className="text-green-500 fill-green-500 sm:w-[40px]" />
             </div>
-            <h2 className="text-3xl sm:text-4xl font-fredoka font-bold text-gray-800 mb-2">Set Complete!</h2>
-            <p className="text-base sm:text-lg text-gray-500 mb-8 sm:mb-10 leading-relaxed">You mastered 5 words. You're getting so smart! Ready for the next set?</p>
+            <h2 className="text-2xl sm:text-3xl font-fredoka font-bold text-gray-800 mb-2">Set Complete!</h2>
+            <p className="text-sm sm:text-base text-gray-400 mb-6 leading-relaxed">You mastered 5 words. You're getting so smart!</p>
             <button 
               onClick={nextSet}
-              className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-5 sm:py-6 rounded-[1.5rem] sm:rounded-3xl shadow-xl transition-all transform active:scale-95 text-xl sm:text-2xl font-fredoka border-b-8 border-green-800 flex items-center justify-center gap-3"
+              className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-xl sm:rounded-2xl shadow-lg transition-all transform active:scale-95 text-lg sm:text-xl font-fredoka border-b-6 border-green-800 flex items-center justify-center gap-2"
             >
-              Next 5 Words <ArrowRight size={28} />
+              Continue <ArrowRight size={20} />
             </button>
           </div>
         ) : isGameOver ? (
-          <div className="bg-white rounded-[2.5rem] sm:rounded-[3rem] shadow-2xl p-8 sm:p-12 text-center max-w-lg mx-auto border-8 border-red-50 animate-scale-up">
-            <div className="w-16 h-16 sm:w-24 sm:h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
-              <Heart size={36} className="text-red-500 sm:w-[48px]" />
+          <div className="bg-white rounded-[2rem] sm:rounded-[3rem] shadow-xl p-6 sm:p-12 text-center max-w-md mx-auto border-4 border-red-50 animate-scale-up">
+            <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Heart size={32} className="text-red-500 sm:w-[40px]" />
             </div>
-            <h2 className="text-3xl sm:text-4xl font-fredoka font-bold text-gray-800 mb-4">Out of Hearts!</h2>
-            <p className="text-base sm:text-xl text-gray-500 mb-8 sm:mb-10 leading-relaxed">Don't worry! Everyone makes mistakes. Take a deep breath and let's try again.</p>
+            <h2 className="text-2xl sm:text-3xl font-fredoka font-bold text-gray-800 mb-4">Out of Hearts!</h2>
+            <p className="text-sm sm:text-base text-gray-400 mb-8 leading-relaxed">Don't worry! Everyone makes mistakes. Let's try again.</p>
             <button 
               onClick={resetGame}
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-5 rounded-[1.5rem] sm:rounded-3xl shadow-xl transition-all transform active:scale-95 text-xl font-fredoka border-b-8 border-blue-800"
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 rounded-xl shadow-lg transition-all transform active:scale-95 text-lg font-fredoka border-b-6 border-blue-800"
             >
-              Refill Hearts & Retry
+              Try Again
             </button>
           </div>
         ) : !gameState.isFinished ? (
-          <div className="space-y-4 sm:space-y-6">
-            <div className="flex justify-between items-center text-gray-400 font-bold px-2">
-              <span className={`uppercase tracking-widest text-[10px] sm:text-xs flex items-center gap-1 sm:gap-2 ${isReviewWord ? 'text-orange-500' : 'text-blue-500'}`}>
-                {isReviewWord ? <Clock size={12} className="animate-spin-slow sm:w-[14px]" /> : <Star size={12} className="animate-pulse sm:w-[14px]" />}
-                {isReviewWord ? 'Review Practice' : 'Discovery Mode'}
+          <div className="space-y-3 sm:space-y-6">
+            <div className="flex justify-between items-center text-gray-400 font-bold px-1">
+              <span className={`uppercase tracking-widest text-[9px] sm:text-xs flex items-center gap-1.5 ${isReviewWord ? 'text-orange-500' : 'text-blue-500'}`}>
+                {isReviewWord ? <Clock size={10} className="animate-spin-slow" /> : <Star size={10} className="animate-pulse" />}
+                {isReviewWord ? 'Review' : 'Study'}
               </span>
-              <span className="text-[10px] sm:text-sm font-fredoka bg-white px-3 sm:px-4 py-1 rounded-full shadow-sm border border-gray-50">
-                <span className="text-blue-500 font-bold">{gameState.wordsCompletedToday}</span> / <span>{gameState.dailyGoal} Words</span>
+              <span className="text-[9px] sm:text-xs font-fredoka bg-white px-2.5 py-1 rounded-full border border-gray-100">
+                Word <span className="text-blue-500 font-bold">{gameState.wordsCompletedToday + 1}</span>
               </span>
             </div>
 
@@ -231,32 +228,32 @@ const App: React.FC = () => {
             )}
           </div>
         ) : (
-          <div className="bg-white rounded-[2.5rem] sm:rounded-[3rem] shadow-2xl p-8 sm:p-12 text-center max-w-lg mx-auto border-8 border-white animate-scale-up relative overflow-hidden">
+          <div className="bg-white rounded-[2rem] sm:rounded-[3rem] shadow-xl p-8 sm:p-12 text-center max-w-md mx-auto border-4 border-white animate-scale-up relative overflow-hidden">
             <div className="absolute -top-20 -right-20 w-64 h-64 bg-yellow-50 rounded-full opacity-50 blur-3xl" />
-            <div className="w-20 h-20 sm:w-28 sm:h-28 bg-gradient-to-br from-yellow-300 to-yellow-500 rounded-full flex items-center justify-center mx-auto mb-6 sm:mb-8 shadow-xl border-4 border-white">
-              <Trophy size={40} className="text-white sm:w-[56px]" />
+            <div className="w-20 h-20 bg-gradient-to-br from-yellow-300 to-yellow-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-md border-2 border-white">
+              <Trophy className="text-white" size={40} />
             </div>
-            <h2 className="text-4xl sm:text-5xl font-fredoka font-bold text-gray-800 mb-4 sm:mb-6">You're a Hero! 🌟</h2>
-            <p className="text-lg sm:text-xl text-gray-500 mb-8 sm:mb-10 leading-relaxed px-4">
-              You completed your daily goal of {gameState.dailyGoal} words! That's amazing!
+            <h2 className="text-3xl sm:text-4xl font-fredoka font-bold text-gray-800 mb-4">You're a Hero! 🌟</h2>
+            <p className="text-sm sm:text-base text-gray-400 mb-8 leading-relaxed">
+              You reached your goal of {gameState.dailyGoal} words!
             </p>
             
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-8 sm:mb-10">
-              <div className="bg-blue-50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 border-b-4 border-blue-100">
-                <p className="text-gray-400 text-[10px] sm:text-sm font-bold uppercase tracking-wider mb-1">Score</p>
-                <p className="text-3xl sm:text-4xl font-fredoka font-bold text-blue-600">{gameState.score}</p>
+            <div className="grid grid-cols-2 gap-3 mb-8">
+              <div className="bg-blue-50 rounded-2xl p-4 border-b-4 border-blue-100">
+                <p className="text-gray-400 text-[10px] font-bold uppercase mb-1">Score</p>
+                <p className="text-2xl font-fredoka font-bold text-blue-600">{gameState.score}</p>
               </div>
-              <div className="bg-orange-50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 border-b-4 border-orange-100">
-                <p className="text-gray-400 text-[10px] sm:text-sm font-bold uppercase tracking-wider mb-1">Streak</p>
-                <p className="text-3xl sm:text-4xl font-fredoka font-bold text-orange-600">{gameState.streak}d</p>
+              <div className="bg-orange-50 rounded-2xl p-4 border-b-4 border-orange-100">
+                <p className="text-gray-400 text-[10px] font-bold uppercase mb-1">Streak</p>
+                <p className="text-2xl font-fredoka font-bold text-orange-600">{gameState.streak}d</p>
               </div>
             </div>
 
             <button 
               onClick={resetGame}
-              className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-5 sm:py-6 rounded-2xl sm:rounded-3xl shadow-2xl transition-all transform active:scale-95 text-xl sm:text-2xl font-fredoka border-b-8 border-blue-800"
+              className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold py-4 rounded-xl shadow-lg transition-all transform active:scale-95 text-lg font-fredoka border-b-6 border-blue-800"
             >
-              Start Tomorrow!
+              Finish Today
             </button>
           </div>
         )}
@@ -271,7 +268,7 @@ const App: React.FC = () => {
           animation: scale-up 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         @keyframes fade-in {
-          from { opacity: 0; transform: translateY(30px); }
+          from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
         }
         .animate-fade-in {
