@@ -19,7 +19,7 @@ const StudyView: React.FC<StudyViewProps> = ({
   onStartQuiz
 }) => {
   const [imgLoaded, setImgLoaded] = useState(false);
-  const [isTipOpen, setIsTipOpen] = useState(true);
+  const [isTipOpen, setIsTipOpen] = useState(false); // Changed to false by default
   const [showImage, setShowImage] = useState(true);
   
   const playWord = () => {
