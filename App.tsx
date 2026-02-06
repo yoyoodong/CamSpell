@@ -1,18 +1,29 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { WordItem, GameState } from './types';
+import { WordItem, GameState, User } from './types';
 import { generateMockWords } from './mockData';
 import WordCard from './components/WordCard';
 import StudyView from './components/StudyView';
-import { Trophy, BookOpen, Star, Heart, Flame, Clock, Target, ArrowRight } from 'lucide-react';
+import WelcomeView from './components/WelcomeView';
+import { Trophy, BookOpen, Star, Heart, Flame, Clock, Target, ArrowRight, User as UserIcon, X, LogOut, Medal } from 'lucide-react';
 import { playCorrectSound, playErrorSound } from './services/soundService';
 import { ReviewManager } from './services/reviewManager';
 
+const STORAGE_KEYS = {
+  USER: 'camspell_user',
+  WORDS: 'camspell_words',
+  GAME_STATE: 'camspell_gamestate'
+};
+
 const App: React.FC = () => {
+  const [user, setUser] = useState<User | null>(null);
+  const [isStarted, setIsStarted] = useState(false);
   const [allWords, setAllWords] = useState<WordItem[]>([]);
   const [activeWordId, setActiveWordId] = useState<string | null>(null);
   const [mode, setMode] = useState<'study' | 'quiz'>('study');
   const [showSetComplete, setShowSetComplete] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  
   const [gameState, setGameState] = useState<GameState>({
     currentWordIndex: 0,
     score: 0,
@@ -23,13 +34,44 @@ const App: React.FC = () => {
     dailyGoal: 15,
   });
 
+  // Load persistence data on mount
   useEffect(() => {
-    const data = generateMockWords(); 
-    setAllWords(data);
-    if (data.length > 0) {
-      setActiveWordId(data[0].id);
+    const savedUser = localStorage.getItem(STORAGE_KEYS.USER);
+    const savedWords = localStorage.getItem(STORAGE_KEYS.WORDS);
+    const savedGameState = localStorage.getItem(STORAGE_KEYS.GAME_STATE);
+
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
+
+    if (savedWords) {
+      const parsedWords = JSON.parse(savedWords);
+      setAllWords(parsedWords);
+      const next = ReviewManager.pickNextWord(parsedWords);
+      if (next) setActiveWordId(next.id);
+    } else {
+      const data = generateMockWords(); 
+      setAllWords(data);
+      if (data.length > 0) setActiveWordId(data[0].id);
+    }
+
+    if (savedGameState) {
+      setGameState(JSON.parse(savedGameState));
     }
   }, []);
+
+  // Persistence Sync
+  useEffect(() => {
+    if (user) localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
+  }, [user]);
+
+  useEffect(() => {
+    if (allWords.length > 0) localStorage.setItem(STORAGE_KEYS.WORDS, JSON.stringify(allWords));
+  }, [allWords]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.GAME_STATE, JSON.stringify(gameState));
+  }, [gameState]);
 
   const currentWord = useMemo(() => 
     allWords.find(w => w.id === activeWordId) || null
@@ -67,11 +109,7 @@ const App: React.FC = () => {
     const newLibrary = allWords.map(w => w.id === updatedWord.id ? updatedWord : w);
     
     setAllWords(newLibrary);
-    setGameState(prev => ({
-      ...prev,
-      score: prev.score + 10,
-    }));
-
+    setGameState(prev => ({ ...prev, score: prev.score + 10 }));
     selectNextWord(newLibrary);
   };
 
@@ -83,10 +121,7 @@ const App: React.FC = () => {
     const newLibrary = allWords.map(w => w.id === updatedWord.id ? updatedWord : w);
     
     setAllWords(newLibrary);
-    setGameState(prev => ({
-      ...prev,
-      hearts: Math.max(0, prev.hearts - 1),
-    }));
+    setGameState(prev => ({ ...prev, hearts: Math.max(0, prev.hearts - 1) }));
   };
 
   const nextSet = () => {
@@ -115,8 +150,23 @@ const App: React.FC = () => {
     setMode('study');
   };
 
+  const logout = () => {
+    localStorage.clear();
+    window.location.reload();
+  };
+
+  const handleUserStart = (newUser: User) => {
+    setUser(newUser);
+    setIsStarted(true);
+  };
+
+  if (!isStarted) {
+    return <WelcomeView onStart={handleUserStart} existingUser={user} />;
+  }
+
   if (allWords.length === 0 || !currentWord) return null;
 
+  const masteredWordsCount = allWords.filter(w => w.masteryLevel > 0).length;
   const progress = (gameState.wordsCompletedToday / gameState.dailyGoal) * 100;
   const isGameOver = gameState.hearts <= 0;
   const isReviewWord = currentWord.masteryLevel > 0;
@@ -133,11 +183,21 @@ const App: React.FC = () => {
       </div>
 
       <nav className="w-[92%] max-w-4xl bg-white/90 backdrop-blur-md shadow-sm px-4 py-2 sm:py-3 flex justify-between items-center mt-4 sm:mt-6 rounded-2xl sm:rounded-3xl sticky top-4 sm:top-8 z-30 border-b-2 border-gray-100 gap-2">
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          <div className="bg-gradient-to-br from-blue-400 to-blue-600 p-1.5 rounded-lg text-white shadow-md">
-            <BookOpen size={16} className="sm:w-[20px]" />
+        <div className="flex items-center gap-1.5 sm:gap-3">
+          <button 
+            onClick={() => setIsProfileModalOpen(true)}
+            className="flex items-center gap-2 bg-blue-50 pl-1 pr-3 py-1 rounded-full border border-blue-100 transition-all hover:bg-blue-100 active:scale-95 group"
+          >
+            <div className="bg-blue-500 p-1 rounded-full text-white group-hover:scale-110 transition-transform">
+              <UserIcon size={14} />
+            </div>
+            <span className="font-fredoka font-bold text-blue-700 text-xs sm:text-sm truncate max-w-[80px] sm:max-w-[120px]">
+              {user?.name}
+            </span>
+          </button>
+          <div className="hidden sm:flex items-center gap-1.5">
+            <h1 className="text-xl font-fredoka font-bold text-blue-600 tracking-tight">CamSpell</h1>
           </div>
-          <h1 className="text-sm sm:text-xl font-fredoka font-bold text-blue-600 tracking-tight">CamSpell</h1>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-4">
@@ -167,6 +227,59 @@ const App: React.FC = () => {
         </div>
       </nav>
 
+      {/* Profile/Records Modal */}
+      {isProfileModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-fade-in">
+          <div className="absolute inset-0 bg-blue-900/40 backdrop-blur-sm" onClick={() => setIsProfileModalOpen(false)} />
+          <div className="bg-white rounded-[2.5rem] w-full max-w-md p-8 shadow-2xl relative border-8 border-white animate-scale-up">
+            <button 
+              onClick={() => setIsProfileModalOpen(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 p-2 bg-gray-50 rounded-full transition-colors"
+            >
+              <X size={20} />
+            </button>
+
+            <div className="text-center mb-8">
+              <div className="w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-xl rotate-3">
+                <UserIcon className="text-white" size={40} />
+              </div>
+              <h2 className="text-3xl font-fredoka font-bold text-gray-800">{user?.name}'s Records</h2>
+              <p className="text-gray-400 text-sm">Learning since {user ? new Date(user.joinedAt).toLocaleDateString() : ''}</p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mb-8">
+              <div className="bg-blue-50 rounded-2xl p-4 border-b-4 border-blue-100 flex flex-col items-center">
+                <Medal className="text-blue-500 mb-1" size={24} />
+                <p className="text-gray-400 text-[10px] font-bold uppercase">Words Mastered</p>
+                <p className="text-2xl font-fredoka font-bold text-blue-600">{masteredWordsCount}</p>
+              </div>
+              <div className="bg-orange-50 rounded-2xl p-4 border-b-4 border-orange-100 flex flex-col items-center">
+                <Flame className="text-orange-500 mb-1" size={24} />
+                <p className="text-gray-400 text-[10px] font-bold uppercase">Streak Days</p>
+                <p className="text-2xl font-fredoka font-bold text-orange-600">{gameState.streak}</p>
+              </div>
+              <div className="bg-green-50 rounded-2xl p-4 border-b-4 border-green-100 flex flex-col items-center">
+                <Star className="text-green-500 mb-1" size={24} />
+                <p className="text-gray-400 text-[10px] font-bold uppercase">Total Score</p>
+                <p className="text-2xl font-fredoka font-bold text-green-600">{gameState.score}</p>
+              </div>
+              <div className="bg-purple-50 rounded-2xl p-4 border-b-4 border-purple-100 flex flex-col items-center">
+                <Trophy className="text-purple-500 mb-1" size={24} />
+                <p className="text-gray-400 text-[10px] font-bold uppercase">Daily Goal</p>
+                <p className="text-2xl font-fredoka font-bold text-purple-600">{gameState.dailyGoal}</p>
+              </div>
+            </div>
+
+            <button 
+              onClick={logout}
+              className="w-full flex items-center justify-center gap-2 text-red-400 hover:text-red-500 font-bold py-2 border-2 border-red-50 rounded-xl transition-colors text-sm"
+            >
+              <LogOut size={16} /> Reset All Progress
+            </button>
+          </div>
+        </div>
+      )}
+
       <main className="w-full max-w-4xl px-4 mt-4 sm:mt-8">
         {showSetComplete ? (
           <div className="bg-white rounded-[2rem] sm:rounded-[3rem] shadow-xl p-6 sm:p-12 text-center max-w-md mx-auto border-4 border-green-50 animate-scale-up">
@@ -174,7 +287,7 @@ const App: React.FC = () => {
               <Star size={32} className="text-green-500 fill-green-500 sm:w-[40px]" />
             </div>
             <h2 className="text-2xl sm:text-3xl font-fredoka font-bold text-gray-800 mb-2">Set Complete!</h2>
-            <p className="text-sm sm:text-base text-gray-400 mb-6 leading-relaxed">You mastered 5 words. You're getting so smart!</p>
+            <p className="text-sm sm:text-base text-gray-400 mb-6 leading-relaxed">Great job, {user?.name}! You mastered 5 more words.</p>
             <button 
               onClick={nextSet}
               className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-xl sm:rounded-2xl shadow-lg transition-all transform active:scale-95 text-lg sm:text-xl font-fredoka border-b-6 border-green-800 flex items-center justify-center gap-2"
@@ -188,12 +301,12 @@ const App: React.FC = () => {
               <Heart size={32} className="text-red-500 sm:w-[40px]" />
             </div>
             <h2 className="text-2xl sm:text-3xl font-fredoka font-bold text-gray-800 mb-4">Out of Hearts!</h2>
-            <p className="text-sm sm:text-base text-gray-400 mb-8 leading-relaxed">Don't worry! Everyone makes mistakes. Let's try again.</p>
+            <p className="text-sm sm:text-base text-gray-400 mb-8 leading-relaxed">Don't worry, {user?.name}! We'll refill them for you. Let's keep trying!</p>
             <button 
               onClick={resetGame}
               className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 rounded-xl shadow-lg transition-all transform active:scale-95 text-lg font-fredoka border-b-6 border-blue-800"
             >
-              Try Again
+              Retry Session
             </button>
           </div>
         ) : !gameState.isFinished ? (
@@ -201,7 +314,7 @@ const App: React.FC = () => {
             <div className="flex justify-between items-center text-gray-400 font-bold px-1">
               <span className={`uppercase tracking-widest text-[9px] sm:text-xs flex items-center gap-1.5 ${isReviewWord ? 'text-orange-500' : 'text-blue-500'}`}>
                 {isReviewWord ? <Clock size={10} className="animate-spin-slow" /> : <Star size={10} className="animate-pulse" />}
-                {isReviewWord ? 'Review' : 'Study'}
+                {isReviewWord ? 'Review' : 'New Word'}
               </span>
               <span className="text-[9px] sm:text-xs font-fredoka bg-white px-2.5 py-1 rounded-full border border-gray-100">
                 Word <span className="text-blue-500 font-bold">{gameState.wordsCompletedToday + 1}</span>
@@ -233,9 +346,9 @@ const App: React.FC = () => {
             <div className="w-20 h-20 bg-gradient-to-br from-yellow-300 to-yellow-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-md border-2 border-white">
               <Trophy className="text-white" size={40} />
             </div>
-            <h2 className="text-3xl sm:text-4xl font-fredoka font-bold text-gray-800 mb-4">You're a Hero! 🌟</h2>
+            <h2 className="text-3xl sm:text-4xl font-fredoka font-bold text-gray-800 mb-4">You're a Hero, {user?.name}! 🌟</h2>
             <p className="text-sm sm:text-base text-gray-400 mb-8 leading-relaxed">
-              You reached your goal of {gameState.dailyGoal} words!
+              You reached your goal of {gameState.dailyGoal} words! Amazing work today!
             </p>
             
             <div className="grid grid-cols-2 gap-3 mb-8">
@@ -253,7 +366,7 @@ const App: React.FC = () => {
               onClick={resetGame}
               className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold py-4 rounded-xl shadow-lg transition-all transform active:scale-95 text-lg font-fredoka border-b-6 border-blue-800"
             >
-              Finish Today
+              Start New Goal
             </button>
           </div>
         )}

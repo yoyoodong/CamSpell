@@ -8,6 +8,12 @@ export enum LetterShape {
   Neutral = "Neutral"      // a, c, e, i, m, n, o, r, s, u, v, w, x, z
 }
 
+export interface User {
+  name: string;
+  avatarId: number;
+  joinedAt: number;
+}
+
 export interface PhonicsRule {
   label: string;        // Technical: "Short i sound"
   displayLabel: string; // Kid-friendly: "⏱️ 短促音"
@@ -32,7 +38,7 @@ export interface WordItem {
   masteryLevel: number;
   nextReviewTime: number;
   example?: string;
-  memoryTip: string; // New: Fun, visual mnemonic tip
+  memoryTip: string;
 }
 
 export interface GameState {
